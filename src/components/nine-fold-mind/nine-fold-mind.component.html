@@ -1,0 +1,68 @@
+<div class="bg-gray-900/50 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm h-full flex flex-col">
+  <h2 class="text-2xl font-bold text-center text-cyan-400 mb-4">Nine-Fold Recursive Mind</h2>
+  <div class="flex-grow flex items-center justify-center p-2">
+    <!-- Recursive Layers Visualization -->
+    <div class="relative w-full h-full min-h-[600px] flex items-center justify-center">
+      @for (layer of layers(); track layer.id; let i = $index) {
+        @let depth = (layers().length - 1 - i) * 10;
+        <div 
+          class="absolute rounded-lg border-2 transition-all duration-300"
+          [class]="getBorderClass(layer)"
+          [class.animate-pulse]="layer.anomaly"
+          [style.width]="'calc(100% - ' + depth + 'px)'"
+          [style.height]="'calc(100% - ' + depth + 'px)'"
+          [style.box-shadow]="'0 0 ' + (i * 1.5) + 'px ' + (i * 0.5) + 'px rgba(8, 145, 178, ' + (0.1 + i*0.05) + ')'"
+          >
+          <div class="p-2 text-xs md:text-sm h-full flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <span class="font-bold text-cyan-300">{{ layer.name }}</span>
+              <div class="text-right">
+                <span class="font-semibold" [class]="getPhaseTextColor(layer.tcePhase)">{{ layer.tcePhase }}</span>
+                <div class="text-gray-400 text-xs">{{ layer.updateTime }}</div>
+              </div>
+            </div>
+            
+            @if (i === layers().length - 1) {
+              <!-- Innermost Layer Content -->
+              <div class="flex-grow flex flex-col justify-center items-center text-center p-2 text-cyan-200">
+                <span class="text-3xl font-bold animate-pulse">CORE</span>
+                <span class="text-sm">Autonomic Processing</span>
+              </div>
+            }
+
+            <div>
+              <!-- AOD State Bars -->
+              <div class="space-y-1 mt-auto">
+                <div class="w-full bg-gray-700/50 rounded-full h-2">
+                  <div class="bg-green-500 h-2 rounded-full" [style.width]="layer.aodState.I + '%'"></div>
+                  <span class="text-xs text-green-300 -mt-2">I: {{ layer.aodState.I.toFixed(0) }}</span>
+                </div>
+                <div class="w-full bg-gray-700/50 rounded-full h-2">
+                  <div class="bg-yellow-500 h-2 rounded-full" [style.width]="layer.aodState.C + '%'"></div>
+                  <span class="text-xs text-yellow-300 -mt-2">C: {{ layer.aodState.C.toFixed(0) }}</span>
+                </div>
+                <div class="w-full bg-gray-700/50 rounded-full h-2">
+                  <div class="bg-blue-500 h-2 rounded-full" [style.width]="layer.aodState.H + '%'"></div>
+                  <span class="text-xs text-blue-300 -mt-2">H: {{ layer.aodState.H.toFixed(0) }}</span>
+                </div>
+              </div>
+
+              <!-- Anomaly & Witness Info -->
+              @if(layer.anomaly) {
+                <div class="mt-2 p-1 bg-red-900/50 border border-red-500 rounded text-center">
+                  <p class="text-xs font-bold text-red-300 animate-pulse">C_E GOVERNANCE ALERT</p>
+                  <p class="text-xs text-red-400">{{ layer.anomaly }}</p>
+                  <p class="text-xs text-yellow-300 mt-1">EMERGENCY DAMPENING ACTIVE</p>
+                </div>
+              }
+              <div class="mt-2 text-gray-500 text-[10px] truncate" [title]="layer.witnessSignature">
+                <span class="font-semibold" [class.text-red-400]="layer.anomaly" [class.text-gray-400]="!layer.anomaly">TWP:</span> {{ layer.witnessSignature }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
